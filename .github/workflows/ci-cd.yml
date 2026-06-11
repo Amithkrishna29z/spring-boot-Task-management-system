@@ -105,6 +105,10 @@ jobs:
           scan-ref: '.'
           format: 'sarif'
           output: 'trivy-results.sarif'
+        env:
+          # Don't reach out to Maven Central to resolve parent/transitive POMs;
+          # the shared runner IP gets rate-limited (HTTP 429) and aborts the scan.
+          TRIVY_OFFLINE_SCAN: 'true'
 
       - name: Upload Trivy results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
