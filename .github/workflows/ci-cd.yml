@@ -118,10 +118,28 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-  build-and-push:
-    needs: [backend-test, frontend-test, e2e, security-scan]
+  # secrets can't be referenced in a job-level `if`, so expose their presence as an output.
+  check-secrets:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    outputs:
+      has-docker: ${{ steps.check.outputs.has-docker }}
+    steps:
+      - id: check
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          if [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_PASSWORD" ]; then
+            echo "has-docker=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-docker=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-and-push:
+    needs: [backend-test, frontend-test, e2e, security-scan, check-secrets]
+    runs-on: ubuntu-latest
+    # Skipped (not failed) until Docker Hub secrets are configured.
+    if: github.ref == 'refs/heads/main' && needs.check-secrets.outputs.has-docker == 'true'
     steps:
       - uses: actions/checkout@v4
 
