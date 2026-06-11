@@ -1,0 +1,69 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: taskmanager-postgres
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: postgres
+      # Required — set in a local .env file (see .env.example). No insecure default.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - taskmanager-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: taskmanager-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://postgres:5432/taskdb
+      DB_USERNAME: postgres
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set}
+      # Required — must be a random string of at least 32 characters.
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+      JWT_ACCESS_EXPIRATION_MS: 900000
+      JWT_REFRESH_EXPIRATION_MS: 604800000
+      # the browser hits the API same-origin through nginx (http), so Secure cookies are off
+      # here. behind real HTTPS use COOKIE_SECURE=true / COOKIE_SAME_SITE=Strict.
+      COOKIE_SECURE: "false"
+      COOKIE_SAME_SITE: Lax
+      CORS_ALLOWED_ORIGINS: http://localhost
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - taskmanager-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # same-origin: nginx proxies /api to the backend
+        VITE_API_BASE_URL: ""
+    container_name: taskmanager-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - taskmanager-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  taskmanager-network:
+    driver: bridge

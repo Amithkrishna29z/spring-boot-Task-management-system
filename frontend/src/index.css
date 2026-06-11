@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-text-primary antialiased;
+  }
+
+  * {
+    @apply border-surfaceHover;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surfaceHover rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-muted;
+  }
+
+  /* Card styles */
+  .card {
+    @apply bg-surface rounded-xl shadow-lg border border-surfaceHover;
+  }
+
+  /* Input styles */
+  .input {
+    @apply bg-surface border border-surfaceHover text-text-primary rounded-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply bg-primary hover:bg-primaryHover text-white font-semibold rounded-lg px-6 py-3 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105;
+  }
+
+  .btn-secondary {
+    @apply bg-surface hover:bg-surfaceHover text-text-primary font-semibold rounded-lg px-6 py-3 transition-all duration-200 border border-surfaceHover;
+  }
+
+  .btn-danger {
+    @apply bg-danger hover:bg-red-600 text-white font-semibold rounded-lg px-6 py-3 transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  /* Improved focus styles for authentication forms */
+  .auth-input {
+    @apply w-full bg-surfaceHover border border-surfaceHover text-text-primary text-sm rounded-lg pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 placeholder-text-muted;
+  }
+
+  /* Compact button styles */
+  .auth-button {
+    @apply w-full bg-primary hover:bg-primaryHover text-white font-semibold text-sm rounded-lg px-6 py-2.5 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2;
+  }
+}

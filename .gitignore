@@ -1,0 +1,71 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# Build outputs
+target/
+dist/
+build/
+*.jar
+*.war
+*.ear
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Spring Boot
+spring-boot-*.log
+
+# Docker
+.dockerignore
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+
+.claude

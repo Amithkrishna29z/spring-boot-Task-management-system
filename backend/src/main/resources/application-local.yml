@@ -1,0 +1,30 @@
+# Run with no DB and no Docker: in-memory H2 (Postgres mode).
+#   mvn spring-boot:run -Dspring-boot.run.profiles=local   (data is wiped on restart)
+# JWT secret still comes from backend/.env.
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: jdbc:h2:mem:taskdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  # Flyway migrations are Postgres-specific; on H2 we let Hibernate build the schema
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  h2:
+    console:
+      enabled: false
+
+app:
+  cookie:
+    secure: false
+    same-site: Lax
+
+logging:
+  level:
+    com.amith.taskmanager: DEBUG
